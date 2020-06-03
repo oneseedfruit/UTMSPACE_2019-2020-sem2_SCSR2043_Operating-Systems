@@ -10,7 +10,7 @@ int main(int argc, char **argv)
 {
     char *algorithm = NULL;
     enum mode current_mode = NONE;
-    const char *filename = "ref2.txt";
+    const char *filename = "ref1.txt";
     int frame_count = -1;
     int ref_count = -1;
 
@@ -99,7 +99,11 @@ int main(int argc, char **argv)
     int f = 0, step = 0;    
     for (i = 0; i < ref_count; ++i)
     {
-        printf("\t%d -> [", ref_strings[i]);        
+        if (current_mode != NONE)
+        {
+            printf("\t%d -> [", ref_strings[i]);
+        }
+        
         int j;
         for (j = 0; j < frame_count; ++j)
         {
@@ -149,18 +153,22 @@ int main(int argc, char **argv)
             }
         }
 
-        for (j = 0; j < frame_count; ++j)
+        if (current_mode != NONE)
         {
-            frame[j] > -1 ? printf("%d", frame[j]) : printf("");
-            j > 1 ? printf("") : frame[j + 1] == -1 ? printf("") : printf(" ");
-        }
-        printf("] ");
-
-        for (j = 0; j < ref_count && j % 3 == 0; ++j)
-        {
-            fault[i] ? printf("fault\n") : printf("no fault\n");
+            for (j = 0; j < frame_count; ++j)
+            {
+                frame[j] > -1 ? printf("%d", frame[j]) : printf("");
+                j >= frame_count - 1 ? printf("") : frame[j + 1] == -1 ? printf("") : printf(" ");
+            }
+            printf("] ");
+            for (j = 0; j < ref_count && j % frame_count == 0; ++j)
+            {
+                fault[i] ? printf("fault\n") : printf("no fault\n");
+            }
         }
     }
+
+    printf("\n");
 
     fclose(input);
 
