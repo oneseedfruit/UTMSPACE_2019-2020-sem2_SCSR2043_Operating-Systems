@@ -1,10 +1,20 @@
+// Randy Tan Shaoxian
+// SX180357CSJS04
+//
+// Assignment 4
+//
+// SCSR2043 Operating Systems
+// UTMSPACE 2019/2020 Semester 2
+
 #include <stdio.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
 
-enum mode { NONE, FIFO, LRU };
+enum mode { FIFO, LRU };
+
+void showHelp(char *progName);
 
 int main(int argc, char **argv)
 {
@@ -16,11 +26,6 @@ int main(int argc, char **argv)
     {
         algorithm = argv[1];
         filename = argv[2];
-        if (filename == NULL)
-        {
-            printf("Can't open file for reading or file not found!\n");
-            return 1;
-        }
    
         if (argv[3])
         {
@@ -38,7 +43,7 @@ int main(int argc, char **argv)
                 frame_count = atoi(argv[3]);
                 if (frame_count <= 0)
                 {
-                    printf("Invalid no. of frames!\n");    
+                    printf("Invalid no. of frames!\n");
                 }
             }
             else
@@ -48,13 +53,14 @@ int main(int argc, char **argv)
         }
     }
 
-    enum mode current_mode = NONE;
+    enum mode current_mode;
     int ref_count = -1;
 
     FILE *input = fopen(filename, "r");
     if (input == NULL)
     {
         printf("Can't open file for reading or file not found!\n");
+        showHelp(argv[0]);
         return 1;
     }
 
@@ -166,10 +172,7 @@ int main(int argc, char **argv)
     int f = 0, step = 0;    
     for (i = 0; i < ref_count; ++i)
     {
-        if (current_mode != NONE)
-        {
-            printf("\t%d -> [", ref_strings[i]);
-        }
+        printf("\t%d -> [", ref_strings[i]);
         
         least_recently_used[ref_strings[i]] = step;
         ++step;
@@ -187,9 +190,6 @@ int main(int argc, char **argv)
         {     
             switch (current_mode)
             {
-                case NONE:                
-                    break;
-
                 case FIFO:
                     frame[f] = ref_strings[i];
                     ++f;
@@ -219,29 +219,21 @@ int main(int argc, char **argv)
                     break;
             }
         }
-
-        if (current_mode == NONE)
+        
+        for (j = 0; j < frame_count; ++j)
         {
-            printf("Invalid algorithm!\n");
-            break;
+            frame[j] > -1 ? printf("%d", frame[j]) : printf("");
+            j >= frame_count - 1 ? printf("") : frame[j + 1] == -1 ? printf("") : printf(" ");
         }
-        else
+        printf("] ");
+        for (j = 0; j < ref_count && j % frame_count == 0; ++j)
         {
-            for (j = 0; j < frame_count; ++j)
+            fault[i] ? printf("fault\n") : printf("no fault\n");
+            if (frame_count == 1)
             {
-                frame[j] > -1 ? printf("%d", frame[j]) : printf("");
-                j >= frame_count - 1 ? printf("") : frame[j + 1] == -1 ? printf("") : printf(" ");
+                break;
             }
-            printf("] ");
-            for (j = 0; j < ref_count && j % frame_count == 0; ++j)
-            {
-                fault[i] ? printf("fault\n") : printf("no fault\n");
-                if (frame_count == 1)
-                {
-                    break;
-                }
-            }
-        }
+        }    
     }
 
     printf("\n");
@@ -249,4 +241,10 @@ int main(int argc, char **argv)
     fclose(input);
 
     return 0;
+}
+
+void showHelp(char *progName)
+{
+    printf("\nThis program simulates FIFO and LRU page replacement algorithms with reference strings as input.");    
+    printf("\nUsage: %s [fifo, lru] [reference string filename] [no. of frames]\n", progName);
 }
