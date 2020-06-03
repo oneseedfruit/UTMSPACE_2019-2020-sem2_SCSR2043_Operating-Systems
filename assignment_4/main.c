@@ -5,6 +5,10 @@
 //
 // SCSR2043 Operating Systems
 // UTMSPACE 2019/2020 Semester 2
+//
+// 6. I got Belady's anomaly when running with belady.txt as input only when using FIFO.
+//    When running with belady.txt as input, there's no Belady's anomaly if using LRU.
+//
 
 #include <stdio.h>
 #include <ctype.h>
