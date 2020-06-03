@@ -245,6 +245,14 @@ int main(int argc, char **argv)
 
 void showHelp(char *progName)
 {
-    printf("\nThis program simulates FIFO and LRU page replacement algorithms with reference strings as input.");    
-    printf("\nUsage: %s [fifo, lru] [reference string filename] [no. of frames]\n", progName);
+    printf("\nThis program simulates FIFO and LRU page replacement algorithms with reference strings as input.");
+    char *progNameOnly = strrchr(progName, '/');
+    if (progNameOnly) 
+    {
+        progNameOnly += 1;
+    } else 
+    {
+        progNameOnly = progName;
+    }    
+    printf("\nUsage: %s [fifo, lru] [reference string filename] [no. of frames]\n", progNameOnly);
 }
