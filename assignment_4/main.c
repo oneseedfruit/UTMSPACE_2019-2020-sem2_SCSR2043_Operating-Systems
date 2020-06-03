@@ -9,6 +9,9 @@
 // 6. I got Belady's anomaly when running with belady.txt as input only when using FIFO.
 //    When running with belady.txt as input, there's no Belady's anomaly if using LRU.
 //
+// belady.txt contains:
+// 12 3 2 1 0 3 2 4 3 2 1 0 4
+//
 
 #include <stdio.h>
 #include <ctype.h>
