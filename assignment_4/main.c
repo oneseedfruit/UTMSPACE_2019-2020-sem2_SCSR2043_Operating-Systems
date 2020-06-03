@@ -9,9 +9,10 @@ enum mode { NONE, FIFO, LRU };
 int main(int argc, char **argv)
 {
     char *algorithm = NULL;
+    const char *filename = "ref3.txt";
+    int frame_count = -1;    
+
     enum mode current_mode = NONE;
-    const char *filename = "ref1.txt";
-    int frame_count = -1;
     int ref_count = -1;
 
     FILE *input = fopen(filename, "r");
@@ -70,7 +71,7 @@ int main(int argc, char **argv)
     int least_recently_used[ref_count];
     for (i = 0; i < ref_count; ++i)
     {
-        least_recently_used[i] = 0;
+        least_recently_used[i] = -1;
     }
 
     int ref_strings[ref_count];
@@ -104,6 +105,9 @@ int main(int argc, char **argv)
             printf("\t%d -> [", ref_strings[i]);
         }
         
+        least_recently_used[ref_strings[i]] = step;
+        ++step;
+
         int j;
         for (j = 0; j < frame_count; ++j)
         {
@@ -114,7 +118,7 @@ int main(int argc, char **argv)
             }
         }
         if (fault[i])
-        {            
+        {     
             switch (current_mode)
             {
                 case NONE:                
@@ -123,7 +127,7 @@ int main(int argc, char **argv)
                 case FIFO:
                     frame[f] = ref_strings[i];
                     ++f;
-                    f = f > frame_count - 1 ? 0 : f;
+                    f = f > frame_count - 1 ? 0 : f;                    
                     break;
                 
                 case LRU:
@@ -135,20 +139,17 @@ int main(int argc, char **argv)
                     }
                     else
                     {
-                        int k;
-                        for (j = 0, k = INT_MAX; j < frame_count; ++j)
+                        int k = INT_MAX;
+                        for (j = 0; j < frame_count; ++j)
                         {
                             if (k > least_recently_used[frame[j]])
                             {
                                 k = least_recently_used[frame[j]];                                
                                 f = j;
-                            }
+                            }                            
                         }
                         frame[f] = ref_strings[i];
-                    }
-                    
-                    least_recently_used[ref_strings[i]] = step;
-                    ++step;
+                    }                    
                     break;
             }
         }
