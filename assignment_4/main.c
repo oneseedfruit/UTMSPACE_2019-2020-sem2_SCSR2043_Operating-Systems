@@ -9,8 +9,24 @@ enum mode { NONE, FIFO, LRU };
 int main(int argc, char **argv)
 {
     char *algorithm = NULL;
-    const char *filename = "ref3.txt";
+    char *filename = NULL;
     int frame_count = -1;    
+
+    if (argc > 1)
+    {
+        algorithm = argv[1];
+        filename = argv[2];
+        if (filename == NULL)
+        {
+            printf("Can't open file for reading or file not found!\n");
+            return 1;
+        }
+   
+        if (argv[3])
+        {
+            frame_count = atoi(argv[3]);
+        }
+    }
 
     enum mode current_mode = NONE;
     int ref_count = -1;
@@ -26,7 +42,11 @@ int main(int argc, char **argv)
     char std_input[input_count];
     
     printf("Algorithm: ");
-    if (!algorithm)
+    if (algorithm)
+    {
+        printf("%s\n", algorithm);
+    }
+    else
     {
         fgets(std_input, input_count, stdin);
 
@@ -41,12 +61,12 @@ int main(int argc, char **argv)
         }
 
         algorithm = std_input;
-    }
-    if (strcmp(algorithm, "fifo\n") == 0)
+    }    
+    if (strcmp(algorithm, "fifo") == 0 || strcmp(algorithm, "fifo\n") == 0)
     {
         current_mode = FIFO;        
     }
-    else if (strcmp(algorithm, "lru\n") == 0)
+    else if (strcmp(algorithm, "lru") == 0 || strcmp(algorithm, "lru\n") == 0)
     {
         current_mode = LRU;
     }
@@ -57,6 +77,10 @@ int main(int argc, char **argv)
         fgets(std_input, input_count, stdin);
         frame_count = atoi(std_input);
     }
+    else
+    {
+        printf("%d\n", frame_count);
+    }    
 
     printf("No. of reference string: ");
     if (ref_count == -1) 
@@ -154,7 +178,12 @@ int main(int argc, char **argv)
             }
         }
 
-        if (current_mode != NONE)
+        if (current_mode == NONE)
+        {
+            printf("Invalid algorithm!\n");
+            break;
+        }
+        else
         {
             for (j = 0; j < frame_count; ++j)
             {
