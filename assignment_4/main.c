@@ -60,14 +60,13 @@ int main(int argc, char **argv)
 
     const int input_count = 256;
     char std_input[input_count];
-    
-    printf("Algorithm: ");
-    if (algorithm)
-    {
-        printf("%s\n", algorithm);
-    }
-    else
-    {
+        
+    int algoInput = 0;
+    while (strcmp(algorithm, "fifo") != 0 && strcmp(algorithm, "fifo\n") != 0 &&
+            strcmp(algorithm, "lru") != 0 && strcmp(algorithm, "lru\n") != 0)
+    {        
+        printf("Invalid algorithm!\n");
+        printf("Algorithm: ");
         fgets(std_input, input_count, stdin);
 
         int a;
@@ -81,7 +80,13 @@ int main(int argc, char **argv)
         }
 
         algorithm = std_input;
-    }    
+        algoInput = 1;
+    }
+    if (!algoInput)
+    {
+        printf("Algorithm: ");
+        printf("%s\n", algorithm);
+    }
     if (strcmp(algorithm, "fifo") == 0 || strcmp(algorithm, "fifo\n") == 0)
     {
         current_mode = FIFO;        
@@ -103,7 +108,7 @@ int main(int argc, char **argv)
             alldigits = isdigit(std_input[i]);
             if (!alldigits || frame_count <= 0)
             {
-                printf("Invalid no. of frames! Please try again: ");
+                printf("Invalid no. of frames!\nNo. of frames: ");
                 --i;
                 fgets(std_input, input_count, stdin);
                 frame_count = atoi(std_input);
