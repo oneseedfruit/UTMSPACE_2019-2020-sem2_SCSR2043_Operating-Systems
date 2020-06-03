@@ -10,7 +10,7 @@ int main(int argc, char **argv)
 {
     char *algorithm = NULL;
     char *filename = NULL;
-    int frame_count = -1;    
+    int frame_count = 0;    
 
     if (argc > 1)
     {
@@ -24,7 +24,27 @@ int main(int argc, char **argv)
    
         if (argv[3])
         {
-            frame_count = atoi(argv[3]);
+            int i, alldigits = 1;            
+            for (i = 0; argv[3][i] != '\0'; ++i)
+            {
+                alldigits = isdigit(argv[3][i]);
+                if (!alldigits)
+                {
+                    break;
+                }
+            }
+            if (alldigits)
+            {
+                frame_count = atoi(argv[3]);
+                if (frame_count <= 0)
+                {
+                    printf("Invalid no. of frames!\n");    
+                }
+            }
+            else
+            {
+                printf("Invalid no. of frames!\n");
+            }            
         }
     }
 
@@ -72,10 +92,27 @@ int main(int argc, char **argv)
     }
 
     printf("No. of frames: ");
-    if (frame_count == -1) 
-    {
+    if (frame_count <= 0) 
+    {   
         fgets(std_input, input_count, stdin);
         frame_count = atoi(std_input);
+
+        int i, alldigits = 1;
+        for (i = 0; std_input[i] != '\0'; ++i)
+        {
+            alldigits = isdigit(std_input[i]);
+            if (!alldigits || frame_count <= 0)
+            {
+                printf("Invalid no. of frames! Please try again: ");
+                --i;
+                fgets(std_input, input_count, stdin);
+                frame_count = atoi(std_input);
+            }
+            else
+            {
+                break;
+            }
+        }
     }
     else
     {
@@ -194,6 +231,10 @@ int main(int argc, char **argv)
             for (j = 0; j < ref_count && j % frame_count == 0; ++j)
             {
                 fault[i] ? printf("fault\n") : printf("no fault\n");
+                if (frame_count == 1)
+                {
+                    break;
+                }
             }
         }
     }
